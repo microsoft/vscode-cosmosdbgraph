@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-vscode.vscode-typescript-tslint-plugin",
-        "ms-vscode.azure-account",
-        "mike-lischke.vscode-antlr4"
+        "ms-vscode.azure-account"
     ]
 }

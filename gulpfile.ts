@@ -3,10 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+// tslint:disable:no-implicit-dependencies (this allows the use of dev dependencies)
+
 import * as cp from 'child_process';
 import * as gulp from 'gulp';
 import * as path from 'path';
-import { gulp_installAzureAccount, gulp_webpack } from 'vscode-azureextensiondev';
+import { Stream } from "stream";
+import { gulp_installAzureAccount, gulp_installVSCodeExtension, gulp_webpack } from 'vscode-azureextensiondev';
 
 function test(): cp.ChildProcess {
     const env = process.env;
@@ -16,6 +19,10 @@ function test(): cp.ChildProcess {
     return cp.spawn('node', ['./node_modules/vscode/bin/test'], { stdio: 'inherit', env });
 }
 
+function gulp_installCosmosDBExtension(): Promise<void> | Stream {
+    return gulp_installVSCodeExtension('0.12.2', 'ms-azuretools', 'cosmosdb');
+}
+
 exports['webpack-dev'] = () => gulp_webpack('development');
 exports['webpack-prod'] = () => gulp_webpack('production');
-exports.test = gulp.series(gulp_installAzureAccount, test);
+exports.test = gulp.series(gulp_installAzureAccount, gulp_installCosmosDBExtension, test);

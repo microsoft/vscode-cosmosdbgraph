@@ -13,12 +13,6 @@
         "**/node_modules": true,
         ".vscode-test": true
     },
-    "antlr4.generation": {
-        // Settings for "ANTLR4 grammar syntax support" extension
-        "mode": "internal",
-        "listeners": true,
-        "visitors": false
-    },
     "editor.codeActionsOnSave": {
         "source.fixAll.tslint": true,
     },

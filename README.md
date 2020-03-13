@@ -1,51 +1,9 @@
 
-# Cosmos DB Support for VS Code (Preview)
+# Cosmos DB Graph Support for VS Code (Preview)
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/ms-azuretools.vscode-cosmosdb.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdb) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/ms-azuretools.vscode-cosmosdb.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdb) [![Build Status](https://dev.azure.com/ms-azuretools/AzCode/_apis/build/status/vscode-cosmosdb)](https://dev.azure.com/ms-azuretools/AzCode/_build/latest?definitionId=7)
+[![Version](https://vsmarketplacebadge.apphb.com/version/ms-azuretools.vscode-cosmosdbgraph.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdbgraph) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/ms-azuretools.vscode-cosmosdbgraph.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdbgraph) [![Build Status](https://dev.azure.com/ms-azuretools/AzCode/_apis/build/status/vscode-cosmosdbgraph)](https://dev.azure.com/ms-azuretools/AzCode/_build/latest?definitionId=TODO)
 
-Browse and query your MongoDB databases both locally and in the cloud using [_scrapbooks_](#mongo-scrapbooks) with rich Intellisense then connect to Azure to manage your Cosmos DB databases with support for MongoDB, Graph (Gremlin), and SQL (previously known as DocumentDB).
-
-![Cosmos DB Extension](resources/features.png)
-
-# Prerequisites
-
-- Some less-common commands in the Mongo [scrapbook](#mongo-scrapbooks) and use of the Mongo shell require installing [Mongo DB and Mongo shell](https://docs.mongodb.com/manual/installation/).
-
-# Features
-
-## Cosmos DB Explorer
-
-- Create a Cosmos DB account by clicking the `+` button in the title
-- View Azure Cosmos DB accounts and open directly in the portal
-- View/Create/Delete databases, collections, graphs, stored procedures, and documents
-- Click on a document or stored procedure to open in the editor
-- Click on a graph to visualize data
-- Query graph using [Gremlin](https://docs.microsoft.com/azure/cosmos-db/gremlin-support)
-- Edit a document and persist changes to the cloud
-- Attach a Mongo server by clicking the plug icon in the title
-
-![Browse CosmosDB and MongoDB databases](resources/Browse.png)
-
-## Mongo Scrapbooks
-### Run Mongo Commands with Rich Intellisense
-
-- View your MongoDB database account by [signing in to Azure](#managing-azure-subscriptions) or using "Attach Database Account" to connect via a connection string
-- Optionally configure the settings `mongo.shell.path` and `mongo.shell.args` if your mongo executable is not already on your system's PATH (many of the common commands have built-in support and do not require the Mongo shell to be installed - see [Prerequisites](#prerequisites))
-- Click on "New Mongo Scrapbook" in the tree title bar
-- Click on "Connect to a database" to indicate which database to run the commands against
-- Enter your commands and/or comments, eg: `db.<collectionName>.find()`
-- IntelliSense (auto-completions) will be provided
-- Click on "Execute" above a command to execute it, or press `CMD+"` (Mac) or `CTRL+"` (Windows and Linux) to execute the line with the cursor
-- To run all commands, click on "Execute All", or press `CMD+:` or `Ctrl+:`
-- Save and re-use later
-![Mongo Scrapbook](resources/Scrapbook.gif)
-
-## Import into Cosmos DB
-
-- You can now import documents from your workspace into CosmosDB. Use the context menu of a collection or a document file (json) to get started!
-![Import documents](resources/import_documents.gif)
-
-## Use [Gremlin](https://docs.microsoft.com/azure/cosmos-db/gremlin-support) to query graphs
+Use [Gremlin](https://docs.microsoft.com/azure/cosmos-db/gremlin-support) to query Cosmos DB graphs.
 
 ![Query Graphs](resources/Graph.gif)
 
@@ -76,42 +34,10 @@ Browse and query your MongoDB databases both locally and in the cloud using [_sc
     ]
 ```
 
-## Create a Cosmos DB Account
-
-![Create Cosmos DB Account](resources/create.gif)
-
-## Attach to the Cosmos DB Emulator
-
-* Install and run the [Cosmos DB Emulator](https://docs.microsoft.com/azure/cosmos-db/local-emulator) on your local machine
-* Right click 'Attached Database Accounts' and select 'Attach Emulator'
-
-![Attach Emulator](resources/attachEmulator.png)
-
-## Managing Azure Subscriptions
-
-If you are not signed in to Azure, you will see a "Sign in to Azure..." link. Alternatively, you can select "View->Command Palette" in the VS Code menu, and search for "Azure: Sign In".
-
-![Sign in to Azure](resources/SignIn.gif)
-
-If you don't have an Azure Account, you can sign up for one today for free and receive $200 in credits by selecting "Create a Free Azure Account..." or selecting "View->Command Palette" and searching for "Azure: Create an Account".
-
-You may sign out of Azure by selecting "View->Command Palette" and searching for "Azure: Sign Out".
-
-To select which subscriptions show up in the extension's explorer, click on the "Select Subscriptions..." button on any subscription node (indicated by a "filter" icon when you hover over it), or select "View->Command Palette" and search for "Azure: Select Subscriptions". Note that this selection affects all VS Code extensions that support the [Azure Account and Sign-In](https://github.com/Microsoft/vscode-azure-account) extension.
-
-![Select Azure Subscriptions](resources/SelectSubscriptions.gif)
-
-## Known Issues
-
-- Azure no longer supports gremlin queries on pre-GA graph accounts. If you see the error "Could not find a valid gremlin endpoint for *graph*", then choose "Open Portal" on the graph node and check the "Gremlin Endpoint" in the Overview tab. If it does not take the form of '...[graph-name].***gremlin***.cosmosdb.azure.com...', then you will need to create a new graph account using the Azure portal or the current version of the extension.
-- Graphs are not currently supported with the emulator
-- Viewing/editing tables is not currently supported
-- Support for escapes in the scrapbooks is preliminary. We currently do not support escaped characters as is inside a string - the characters need to be double escaped. For example, newlines in the string should be  '\\\\n' instead of '\\n' to be recognized correctly. If you find any issues with how the scrapbook handles escapes, please add to issue [#937](https://github.com/Microsoft/vscode-cosmosdb/issues/937).
-
 # Contributing
-There are several ways you can contribute to our [repo](https://github.com/Microsoft/vscode-cosmosdb):
+There are several ways you can contribute to our [repo](https://github.com/Microsoft/vscode-cosmosdbgraph):
 
-- **Ideas, feature requests and bugs**: We are open to all ideas and we want to get rid of bugs! Use the [Issues](https://github.com/Microsoft/vscode-cosmosdb/issues) section to report a new issue, provide your ideas or contribute to existing threads.
+- **Ideas, feature requests and bugs**: We are open to all ideas and we want to get rid of bugs! Use the [Issues](https://github.com/Microsoft/vscode-cosmosdbgraph/issues) section to report a new issue, provide your ideas or contribute to existing threads.
 
 - **Documentation**: Found a typo or strangely worded sentences? Submit a PR!
 - **Code**: Contribute bug fixes, features or design changes:

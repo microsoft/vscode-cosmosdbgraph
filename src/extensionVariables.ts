@@ -3,36 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ExtensionContext, TreeView } from "vscode";
-import { AzExtTreeDataProvider, AzExtTreeItem, IAzExtOutputChannel, IAzureUserInput, ITelemetryReporter } from "vscode-azureextensionui";
-import { MongoDatabaseTreeItem } from "./mongo/tree/MongoDatabaseTreeItem";
-import { AttachedAccountsTreeItem } from "./tree/AttachedAccountsTreeItem";
-import { AzureAccountTreeItemWithAttached } from "./tree/AzureAccountTreeItemWithAttached";
+import { ExtensionContext } from "vscode";
+import { IAzExtOutputChannel, IAzureUserInput, ITelemetryReporter } from "vscode-azureextensionui";
+import { GraphViewsManager } from "./graph/GraphViewsManager";
 
 /**
  * Namespace for common variables used throughout the extension. They must be initialized in the activate() method of extension.ts
  */
 export namespace ext {
-    export let connectedMongoDB: MongoDatabaseTreeItem | undefined;
     export let ui: IAzureUserInput;
     export let context: ExtensionContext;
     export let outputChannel: IAzExtOutputChannel;
     export let reporter: ITelemetryReporter;
-    export let tree: AzExtTreeDataProvider;
-    export let treeView: TreeView<AzExtTreeItem>;
-    export let attachedAccountsNode: AttachedAccountsTreeItem;
     // tslint:disable-next-line: strict-boolean-expressions
-    export let ignoreBundle: boolean = !/^(false|0)?$/i.test(process.env.AZCODE_COSMOSDB_IGNORE_BUNDLE || '');
-    export let azureAccountTreeItem: AzureAccountTreeItemWithAttached;
-
-    export namespace settingsKeys {
-        export const mongoShellPath = 'mongo.shell.path';
-        export const mongoShellArgs = 'mongo.shell.args';
-        export const documentLabelFields = 'cosmosDB.documentLabelFields';
-        export const mongoShellTimeout = 'mongo.shell.timeout';
-
-        export namespace vsCode {
-            export const proxyStrictSSL = "http.proxyStrictSSL";
-        }
-    }
+    export let ignoreBundle: boolean = !/^(false|0)?$/i.test(process.env.AZCODE_COSMOSDB_GRAPH_IGNORE_BUNDLE || '');
+    export let graphViewsManager: GraphViewsManager;
+    export const prefix: string = 'cosmosDB'; // Intentionally using same prefix as Cosmos DB to maintain backwards compatability of settings
 }

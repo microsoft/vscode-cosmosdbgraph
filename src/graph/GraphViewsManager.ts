@@ -9,7 +9,7 @@ import * as vscode from 'vscode';
 import { parseError } from 'vscode-azureextensionui';
 import { getResourcesPath } from '../constants';
 import { ext } from '../extensionVariables';
-import { areConfigsEqual, GraphConfiguration } from './GraphConfiguration';
+import { IGraphConfiguration } from '../vscode-cosmosdbgraph.api';
 import { GraphViewServer } from './GraphViewServer';
 
 // grandfathered in
@@ -27,10 +27,7 @@ export class GraphViewsManager implements IServerProvider { //Graphviews Panel
     private readonly _panels = new Map<number, vscode.WebviewPanel>(); // map of id -> webview panel
     private readonly _panelViewType: string = "CosmosDB.GraphExplorer";
 
-    public async showGraphViewer(
-        tabTitle: string,
-        config: GraphConfiguration
-    ): Promise<void> {
+    public async showGraphViewer(config: IGraphConfiguration): Promise<void> {
         let id: number;
         try {
             id = await this.getOrCreateServer(config);
@@ -50,7 +47,7 @@ export class GraphViewsManager implements IServerProvider { //Graphviews Panel
             retainContextWhenHidden: true,
             localResourceRoots: [vscode.Uri.file(ext.context.extensionPath)]
         };
-        const panel = vscode.window.createWebviewPanel(this._panelViewType, tabTitle, { viewColumn: column, preserveFocus: true }, options);
+        const panel = vscode.window.createWebviewPanel(this._panelViewType, config.tabTitle, { viewColumn: column, preserveFocus: true }, options);
         const contentProvider = new WebviewContentProvider(this);
         panel.webview.html = await contentProvider.provideHtmlContent(id);
         this._panels.set(id, panel);
@@ -70,7 +67,7 @@ export class GraphViewsManager implements IServerProvider { //Graphviews Panel
         return this._servers.get(id);
     }
 
-    private async getOrCreateServer(config: GraphConfiguration): Promise<number> {
+    private async getOrCreateServer(config: IGraphConfiguration): Promise<number> {
         let existingServer: GraphViewServer = null;
         let existingId: number;
         this._servers.forEach((svr, key) => {
@@ -122,4 +119,11 @@ class WebviewContentProvider {
         return htmlContents;
     }
 
+}
+
+function areConfigsEqual(config1: IGraphConfiguration, config2: IGraphConfiguration): boolean {
+    // Don't compare gremlin endpoints, documentEndpoint is enough to guarantee uniqueness
+    return config1.documentEndpoint === config2.documentEndpoint &&
+        config1.databaseName === config2.databaseName &&
+        config1.graphName === config2.graphName;
 }

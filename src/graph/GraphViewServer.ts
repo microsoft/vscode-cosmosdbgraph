@@ -11,9 +11,8 @@ import * as io from 'socket.io';
 import * as vscode from 'vscode';
 import { callWithTelemetryAndErrorHandling, IActionContext } from 'vscode-azureextensionui';
 import { removeDuplicatesById } from "../utils/array";
-import { GraphConfiguration } from './GraphConfiguration';
+import { IGraphConfiguration, IGremlinEndpoint } from '../vscode-cosmosdbgraph.api';
 import { GraphViewServerSocket } from "./GraphViewServerSocket";
-import { IGremlinEndpoint } from "./gremlinEndpoints";
 
 // grandfathered in
 // tslint:disable:typedef
@@ -50,7 +49,7 @@ export class GraphViewServer extends EventEmitter {
     private _socket: GraphViewServerSocket;
     private _pageState: PageState;
 
-    constructor(private _configuration: GraphConfiguration) {
+    constructor(private _configuration: IGraphConfiguration) {
         super();
         this._pageState = {
             query: undefined,
@@ -62,7 +61,7 @@ export class GraphViewServer extends EventEmitter {
         };
     }
 
-    public get configuration(): GraphConfiguration {
+    public get configuration(): IGraphConfiguration {
         return this._configuration;
     }
 

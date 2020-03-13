@@ -15,7 +15,10 @@ export const testUserInput: TestUserInput = new TestUserInput(vscode);
 // Runs before all tests
 suiteSetup(async function (this: IHookCallbackContext): Promise<void> {
     this.timeout(2 * 60 * 1000);
-    await vscode.commands.executeCommand('cosmosDB.refresh'); // activate the extension before tests begin
+
+    const extension = vscode.extensions.getExtension('ms-azuretools.vscode-cosmosdbgraph');
+    await extension.activate();
+
     ext.outputChannel = new TestOutputChannel();
     ext.ui = testUserInput;
 });
