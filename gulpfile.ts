@@ -20,7 +20,7 @@ function test(): cp.ChildProcess {
 }
 
 function gulp_installCosmosDBExtension(): Promise<void> | Stream {
-    return gulp_installVSCodeExtension('0.12.2', 'ms-azuretools', 'cosmosdb');
+    return gulp_installVSCodeExtension('0.12.2', 'ms-azuretools', 'vscode-cosmosdb');
 }
 
 exports['webpack-dev'] = () => gulp_webpack('development');
