@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ExtensionContext } from "vscode";
-import { IAzExtOutputChannel, IAzureUserInput, ITelemetryReporter } from "vscode-azureextensionui";
+import { IAzExtOutputChannel, IAzureUserInput } from "vscode-azureextensionui";
 import { GraphViewsManager } from "./graph/GraphViewsManager";
 
 /**
@@ -14,9 +14,7 @@ export namespace ext {
     export let ui: IAzureUserInput;
     export let context: ExtensionContext;
     export let outputChannel: IAzExtOutputChannel;
-    export let reporter: ITelemetryReporter;
-    // tslint:disable-next-line: strict-boolean-expressions
-    export let ignoreBundle: boolean = !/^(false|0)?$/i.test(process.env.AZCODE_COSMOSDB_GRAPH_IGNORE_BUNDLE || '');
+    export let ignoreBundle: boolean | undefined;
     export let graphViewsManager: GraphViewsManager;
     export const prefix: string = 'cosmosDB'; // Intentionally using same prefix as Cosmos DB to maintain backwards compatability of settings
 }

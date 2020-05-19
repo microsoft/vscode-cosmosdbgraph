@@ -6,15 +6,15 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import { AzureUserInput, callWithTelemetryAndErrorHandling, createApiProvider, createAzExtOutputChannel, createTelemetryReporter, IActionContext, registerUIExtensionVariables } from 'vscode-azureextensionui';
+import { AzureUserInput, callWithTelemetryAndErrorHandling, createApiProvider, createAzExtOutputChannel, IActionContext, registerUIExtensionVariables } from 'vscode-azureextensionui';
 import { AzureExtensionApi, AzureExtensionApiProvider } from 'vscode-azureextensionui/api';
 import { openGraphExplorer } from './commands/api/openGraphExplorer';
 import { ext } from './extensionVariables';
 import { GraphViewsManager } from './graph/GraphViewsManager';
 
-export async function activateInternal(context: vscode.ExtensionContext, perfStats: { loadStartTime: number, loadEndTime: number }): Promise<AzureExtensionApiProvider> {
+export async function activateInternal(context: vscode.ExtensionContext, perfStats: { loadStartTime: number, loadEndTime: number }, ignoreBundle?: boolean): Promise<AzureExtensionApiProvider> {
     ext.context = context;
-    ext.reporter = createTelemetryReporter(context);
+    ext.ignoreBundle = ignoreBundle;
     ext.ui = new AzureUserInput(context.globalState);
 
     ext.outputChannel = createAzExtOutputChannel("Azure Cosmos DB Graph", ext.prefix);
