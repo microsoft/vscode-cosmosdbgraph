@@ -1,7 +1,9 @@
 
-# Cosmos DB Graph Support for VS Code (Preview)
+# Cosmos DB Graph Support for VS Code (deprecated)
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/ms-azuretools.vscode-cosmosdbgraph.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdbgraph) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/ms-azuretools.vscode-cosmosdbgraph.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-cosmosdbgraph) [![Build Status](https://dev.azure.com/ms-azuretools/AzCode/_apis/build/status/vscode-cosmosdbgraph)](https://dev.azure.com/ms-azuretools/AzCode/_build/latest?definitionId=28)
+Note: This extension has been deprecated. Visualize graph data in the Azure Portal or with [these solutions](https://docs.microsoft.com/azure/cosmos-db/graph-visualization) instead.
+
+---
 
 Use [Gremlin](https://docs.microsoft.com/azure/cosmos-db/gremlin-support) to query Cosmos DB graphs.
 
