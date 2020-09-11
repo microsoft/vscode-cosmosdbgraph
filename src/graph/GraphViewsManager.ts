@@ -49,7 +49,7 @@ export class GraphViewsManager implements IServerProvider { //Graphviews Panel
         };
         const panel = vscode.window.createWebviewPanel(this._panelViewType, config.tabTitle, { viewColumn: column, preserveFocus: true }, options);
         const contentProvider = new WebviewContentProvider(this);
-        panel.webview.html = await contentProvider.provideHtmlContent(id);
+        panel.webview.html = await contentProvider.provideHtmlContent(panel.webview, id);
         this._panels.set(id, panel);
         panel.onDidDispose(
             // dispose the server
@@ -96,25 +96,24 @@ class WebviewContentProvider {
 
     public constructor(private _serverProvider: IServerProvider) { }
 
-    public async provideHtmlContent(serverId: number): Promise<string> {
+    public async provideHtmlContent(webview: vscode.Webview, serverId: number): Promise<string> {
         console.assert(serverId > 0);
         const server = this._serverProvider.findServerById(serverId);
         if (server) {
-            return await this._graphClientHtmlAsString(server.port);
+            return await this._graphClientHtmlAsString(webview, server.port);
         }
 
         throw new Error("This resource is no longer available.");
     }
 
-    private async _graphClientHtmlAsString(port: number): Promise<string> {
+    private async _graphClientHtmlAsString(webview: vscode.Webview, port: number): Promise<string> {
         const graphClientAbsolutePath = path.join(getResourcesPath(), 'graphClient', 'graphClient.html');
         let htmlContents: string = await fse.readFile(graphClientAbsolutePath, 'utf8');
         const portPlaceholder: RegExp = /\$CLIENTPORT/g;
         htmlContents = htmlContents.replace(portPlaceholder, String(port));
         const uriPlaceholder: RegExp = /\$BASEURI/g;
-        const uri = vscode.Uri.parse(path.join("file:" + ext.context.extensionPath));
-        const baseUri = `vscode-resource:${uri.fsPath}`;
-        htmlContents = htmlContents.replace(uriPlaceholder, baseUri);
+        const baseUri = webview.asWebviewUri(vscode.Uri.file(ext.context.extensionPath));
+        htmlContents = htmlContents.replace(uriPlaceholder, baseUri.toString());
 
         return htmlContents;
     }
