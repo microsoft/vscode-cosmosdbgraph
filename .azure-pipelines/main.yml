@@ -37,11 +37,3 @@ pr:
   branches:
     include:
     - '*'
-
-schedules:
-- cron: "30 10 * * *"
-  displayName: Nightly at 3:30 PT
-  always: true # Run even when there are no code changes
-  branches:
-    include:
-    - master
