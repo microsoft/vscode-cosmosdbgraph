@@ -5,9 +5,6 @@
 
 import * as io from 'socket.io';
 
-// grandfathered in
-// tslint:disable:typedef
-
 /**
  * Wraps SocketIO.Socket to provide type safety
  */
@@ -18,10 +15,8 @@ export class GraphViewServerSocket {
         this._socket.on(event, listener);
     }
 
-    // tslint:disable-next-line:no-any
-    public emitToClient(message: ServerMessage, ...args: any[]): boolean {
-        // tslint:disable-next-line:no-suspicious-comment
-        // TODO: use post message
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public emitToClient(message: ServerMessage, ...args: any[]): boolean { // TODO: use post message
 
         // console.log("Message to client: " + message + " " + args.join(", "));
         return this._socket.emit(message, ...args);

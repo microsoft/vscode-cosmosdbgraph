@@ -21,8 +21,7 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
     context.subscriptions.push(ext.outputChannel);
     registerUIExtensionVariables(ext);
 
-    // tslint:disable-next-line: max-func-body-length
-    await callWithTelemetryAndErrorHandling('cosmosDBGraph.activate', async (activateContext: IActionContext) => {
+    await callWithTelemetryAndErrorHandling('cosmosDBGraph.activate', (activateContext: IActionContext) => {
         activateContext.telemetry.properties.isActivationEvent = 'true';
         activateContext.telemetry.measurements.mainFileLoad = (perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
 
@@ -35,6 +34,6 @@ export async function activateInternal(context: vscode.ExtensionContext, perfSta
     }]);
 }
 
-// tslint:disable-next-line:no-empty
 export function deactivateInternal(): void {
+    return;
 }

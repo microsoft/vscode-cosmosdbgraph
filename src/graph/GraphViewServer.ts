@@ -14,9 +14,6 @@ import { removeDuplicatesById } from "../utils/array";
 import { IGraphConfiguration, IGremlinEndpoint } from '../vscode-cosmosdbgraph.api';
 import { GraphViewServerSocket } from "./GraphViewServerSocket";
 
-// grandfathered in
-// tslint:disable:typedef
-
 class GremlinParseError extends Error {
     constructor(err: Error) {
         super(err.message);
@@ -65,7 +62,7 @@ export class GraphViewServer extends EventEmitter {
         return this._configuration;
     }
 
-    public dispose() {
+    public dispose(): void {
         if (this._socket) {
             this._socket.disconnect();
             this._socket = null;
@@ -182,12 +179,14 @@ export class GraphViewServer extends EventEmitter {
                         context.telemetry.measurements.limitedEdges = limitedEdges.length;
                         context.telemetry.measurements.edgesQueryDuration = (Date.now() - edgesStart) / 1000;
                     } catch (edgesError) {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         throw new EdgeQueryError(`Error querying for edges: ${edgesError.message || edgesError}`);
                     }
                 }
             });
         } catch (error) {
             // If there's an error, send it to the client to display
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             const message = this.removeErrorCallStack(error.message || error.toString());
             this._pageState.errorMessage = message;
             this._socket.emitToClient("showQueryError", queryId, message);
@@ -199,8 +198,9 @@ export class GraphViewServer extends EventEmitter {
         this._socket.emitToClient("showResults", queryId, results, this.getViewSettings());
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private getVertices(queryResults: any[]): GraphVertex[] {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
         return queryResults.filter(n => n.type === "vertex" && typeof n.id === "string");
     }
 
@@ -254,7 +254,7 @@ export class GraphViewServer extends EventEmitter {
         }
 
         // Build queries from each list of IDs
-        // tslint:disable-next-line:no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const promises: Promise<any[]>[] = [];
         for (const idList of idLists) {
             const query = `g.V(${idList}).outE().dedup()`;
@@ -263,6 +263,7 @@ export class GraphViewServer extends EventEmitter {
         }
 
         const results = await Promise.all(promises);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return Array.prototype.concat(...results);
     }
 
@@ -282,12 +283,12 @@ export class GraphViewServer extends EventEmitter {
         return message;
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private async executeQuery(queryId: number, gremlinQuery: string): Promise<any[]> {
         const maxRetries = 3; // original try + this many extra tries
         let iTry = 0;
 
-        // tslint:disable-next-line:no-constant-condition
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             iTry++;
 
@@ -295,6 +296,7 @@ export class GraphViewServer extends EventEmitter {
                 if (iTry > 1) {
                     this.log(`Retry #${iTry - 1} for query ${queryId}: ${truncateQuery(gremlinQuery)}`);
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                 return await this._executeQueryCore(queryId, gremlinQuery);
             } catch (err) {
                 if (this.isErrorRetryable(err)) {
@@ -304,6 +306,7 @@ export class GraphViewServer extends EventEmitter {
                         continue;
                     }
                 } else if (this.isParseError(err)) {
+                    // eslint-disable-next-line no-ex-assign
                     err = new GremlinParseError(err);
                 }
 
@@ -312,7 +315,7 @@ export class GraphViewServer extends EventEmitter {
         }
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private async _executeQueryCore(queryId: number, gremlinQuery: string): Promise<any[]> {
         if (this.configuration.gremlinEndpoint) {
             return this._executeQueryCoreForEndpoint(queryId, gremlinQuery, this.configuration.gremlinEndpoint);
@@ -325,9 +328,11 @@ export class GraphViewServer extends EventEmitter {
                     this.configuration.gremlinEndpoint = endpoint;
                     return Promise.resolve(result);
                 } catch (err) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     if (err.code === "ENOTFOUND") {
                         // Not a valid endpoint
                     } else {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         firstValidError = firstValidError || err;
                     }
                 }
@@ -342,10 +347,11 @@ export class GraphViewServer extends EventEmitter {
         }
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private async _executeQueryCoreForEndpoint(queryId: number, gremlinQuery: string, endpoint: IGremlinEndpoint): Promise<any[]> {
         this.log(`Executing query #${queryId} (${endpoint.host}:${endpoint.port}): ${truncateQuery(gremlinQuery)}`);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const client = gremlin.createClient(
             endpoint.port,
             endpoint.host,
@@ -357,6 +363,7 @@ export class GraphViewServer extends EventEmitter {
             });
 
         // Patch up handleProtocolMessage as a temporary work-around for https://github.com/jbmusso/gremlin-javascript/issues/93
+        /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
         const originalHandleProtocolMessage = client.handleProtocolMessage;
         client.handleProtocolMessage = function handleProtocolMessage(message) {
             if (!message.binary) {
@@ -376,7 +383,7 @@ export class GraphViewServer extends EventEmitter {
             socketError = err;
         }
 
-        // tslint:disable-next-line:no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Promise<[any[]]>((resolve, reject) => {
             client.execute(gremlinQuery, {}, (err, results) => {
                 if (socketError) {
@@ -391,6 +398,7 @@ export class GraphViewServer extends EventEmitter {
                 }
             });
         });
+        /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
     }
 
     private isParseError(err: { message?: string }): boolean {
@@ -434,8 +442,7 @@ export class GraphViewServer extends EventEmitter {
     private handleQueryMessage(queryId: number, gremlinQuery: string) {
         this.log(`Query requested: queryId=${queryId}, gremlin="${gremlinQuery}"`);
 
-        //tslint:disable-next-line:no-floating-promises
-        this.queryAndShowResults(queryId, gremlinQuery);
+        void this.queryAndShowResults(queryId, gremlinQuery);
     }
 
     private handleGetTitleMessage() {
@@ -444,7 +451,7 @@ export class GraphViewServer extends EventEmitter {
     }
 
     private setUpSocket() {
-        // tslint:disable-next-line:no-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this._socket.onClientMessage('log', (...args: any[]) => {
             this.log('from client: ', ...args);
         });
@@ -465,7 +472,7 @@ export class GraphViewServer extends EventEmitter {
         this._socket.onClientMessage('setView', (view: 'graph' | 'json') => this.handleSetView(view));
     }
 
-    // tslint:disable-next-line:no-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private log(_message, ..._args: any[]) {
         // console.log(message, ...args);
     }

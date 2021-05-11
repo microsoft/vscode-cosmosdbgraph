@@ -21,9 +21,7 @@
  * top/active-frame/graphClient.html/Electron Isolated Context, or use CTRL+P.
  */
 
-// tslint:disable:restrict-plus-operands // Grand-fathered in, code should be replaced soon
-// tslint:disable:no-any typedef // Grand-fathered in, code should be replaced soon
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare let d3: any;
 
 const animationStepMs = 50;
@@ -53,10 +51,13 @@ let htmlElements: {
 type State = "initial" | "querying" | "error" | "json-results" | "graph-results" | "empty-results";
 
 window.onerror = (message) => {
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     logToUI("ERROR: " + message);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getErrorMessage(error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     return error.message || error.toString();
 }
 
@@ -89,6 +90,7 @@ class SocketWrapper {
 
     public onServerMessage(message: ServerMessage | "connect" | "disconnect", fn: Function): SocketIOClient.Emitter {
         //use webview's onDidGetMessage
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this._socket.on(message, (...args: any[]) => {
             try {
                 fn(...args);
@@ -99,13 +101,13 @@ class SocketWrapper {
         });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public emitToHost(message: ClientMessage, ...args: any[]): SocketIOClient.Socket {
         logToUI("Message to host: " + message + " " + args.join(", "));
         return this._socket.emit(message, ...args);
     }
 }
 
-// tslint:disable-next-line: export-name
 export class GraphClient {
     private _socket: SocketWrapper;
     private _currentQueryId = 0;
@@ -134,7 +136,6 @@ export class GraphClient {
         this.setStateInitial();
 
         this.log(`Listening on port ${port}`);
-        // tslint:disable-next-line:no-http-string
         this._socket = new SocketWrapper(io.connect(`http://localhost:${port}`));
 
         // setInterval(() => {
@@ -174,6 +175,7 @@ export class GraphClient {
 
         this._socket.onServerMessage("setTitle", (title: string): void => {
             this.log(`Received title: ${title}`);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             d3.select(htmlElements.title).text(title);
         });
 
@@ -198,43 +200,43 @@ export class GraphClient {
         });
     }
 
-    public getPageState() {
+    public getPageState(): void {
         this._socket.emitToHost('getPageState');
     }
 
-    public copyParentStyleSheets() {
+    public copyParentStyleSheets(): void {
         // Copy style sheets from parent to pick up theme colors
         const head = document.getElementsByTagName("head")[0];
         const styleSheets = parent.document.getElementsByTagName("style");
         // The styleSheets object doesn't have a method returning an iterator
-        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < styleSheets.length; ++i) {
             head.insertBefore(styleSheets[i].cloneNode(true), head.firstChild);
         }
     }
 
-    public query(gremlin: string) {
+    public query(gremlin: string): void {
         this._currentQueryId += 1;
         this._socket.emitToHost("query", this._currentQueryId, gremlin);
 
         this.setStateQuerying();
     }
 
-    public selectGraphView() {
+    public selectGraphView(): void {
         this._isGraphView = true;
         this.setView();
     }
 
-    public selectJsonView() {
+    public selectJsonView(): void {
         this._isGraphView = false;
         this.setView();
     }
 
-    public setQuery(query: string) {
+    public setQuery(query: string): void {
         this._socket.emitToHost('setQuery', query);
     }
 
     private selectById<T extends HTMLElement>(id: string): T {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const elem = <T>d3.select(`#${id}`)[0][0];
         console.assert(!!elem, `Could not find element with ID ${id}`);
         return elem;
@@ -244,7 +246,9 @@ export class GraphClient {
     private setView() {
         htmlElements.graphRadio.checked = this._isGraphView;
         htmlElements.jsonRadio.checked = !this._isGraphView;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         d3.select(htmlElements.graphSection).classed("active", !!this._isGraphView);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         d3.select(htmlElements.jsonSection).classed("active", !this._isGraphView);
         this._socket.emitToHost('setView', this._isGraphView ? 'graph' : 'json');
     }
@@ -266,7 +270,9 @@ export class GraphClient {
         this._graphView.clear();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private setStateError(error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         htmlElements.queryError.value = getErrorMessage(error);
         this._setState("error");
         this._graphView.clear();
@@ -292,6 +298,7 @@ export class GraphClient {
 
         // Sets the state name into a CSS class onto the "#states" element. This is then used by CSS to
         //   control visibility of HTML elements.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         d3.select("#states").attr("class", fullState);
     }
 
@@ -314,8 +321,10 @@ export class GraphClient {
 }
 
 class GraphView {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _force: any;
     private _defaultColorsPerLabel = new Map<string, string>();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     private _colorGenerator: (i: number) => string = d3.scale.category20();
 
     private static calculateClosestPIOver2(angle: number): number {
@@ -337,7 +346,6 @@ class GraphView {
         };
     }
 
-    // tslint:disable-next-line: max-func-body-length
     public display(countUniqueVertices: number, vertices: GraphVertex[], countUniqueEdges: number, edges: GraphEdge[], viewSettings: GraphViewSettings) {
         this.clear();
         this.generateDefaultColors(vertices);
@@ -367,6 +375,8 @@ class GraphView {
         const statsText: string = (nodes.length === countUniqueVertices && links.length === countUniqueEdges) ?
             `Displaying all ${nodes.length} vertices and ${links.length} edges` :
             `Displaying ${nodes.length} of ${countUniqueVertices} vertices and ${links.length} of ${countUniqueEdges} edges`;
+
+        /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment */
         d3.select(htmlElements.stats).text(statsText);
 
         // Set up force simulation
@@ -407,8 +417,8 @@ class GraphView {
 
         // Allow user to drag/zoom the entire SVG
         svg = svg
-            // tslint:disable-next-line:no-function-expression // Grandfathered in
             .call(d3.behavior.zoom().on("zoom", function () {
+                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                 svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
             }))
             .append("g");
@@ -423,12 +433,14 @@ class GraphView {
             .attr('marker-end', 'url(#triangle)');
 
         // Allow user to drag nodes. Set "dragging" class while dragging.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const vertexDrag = force.drag().on("dragstart", function (this: any) {
             d3.select(this).classed("dragging", true);
 
             // Make sure a drag gesture doesn't also start a zoom action
             d3.event.sourceEvent.stopPropagation();
         })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .on("dragend", function (this: any) { d3.select(this).classed("dragging", false); });
 
         // Labels
@@ -480,9 +492,11 @@ class GraphView {
         });
 
         force.start();
+        /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment */
     }
 
     public clear(): void {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         d3.select(htmlElements.graphSection).select("svg").selectAll(".vertex, .edge, .label").remove();
     }
 
@@ -499,7 +513,9 @@ class GraphView {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private positionLink(l: any) {
+        /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-assignment */
         const d1 = GraphView.calculateControlPoint(l.source, l.target);
 
         const radius = vertexRadius + paddingBetweenVertexAndEdge;
@@ -521,8 +537,10 @@ class GraphView {
         return "M" + tx + "," + ty
             + "S" + d1.x + "," + d1.y
             + " " + ux + "," + uy;
+        /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-assignment */
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private findVertexPropertySetting(v: GraphVertex, viewSettings: GraphViewSettings, settingProperty: keyof VertexSettingsGroup): any | undefined {
         const label = v.label;
 
@@ -552,8 +570,10 @@ class GraphView {
     }
 
     private getVertexColor(v: GraphVertex, viewSettings: GraphViewSettings): string {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const color = this.findVertexPropertySetting(v, viewSettings, "color");
         if (color && color !== AutoColor) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return color;
         }
 
@@ -563,6 +583,7 @@ class GraphView {
 
     private getVertexDisplayText(v: GraphVertex, viewSettings: GraphViewSettings): string {
         let text: string;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const propertyCandidates = this.findVertexPropertySetting(v, viewSettings, "displayProperty") || [];
         // Find the first specified property that exists and has a non-empty value
         for (const candidate of propertyCandidates) {
@@ -572,6 +593,7 @@ class GraphView {
                 text = v.label;
             } else {
                 if (v.properties && candidate in v.properties) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     const property = v.properties[candidate][0];
                     if (property && property.value) {
                         text = property.value;
@@ -584,7 +606,9 @@ class GraphView {
         // Otherwise use "id"
         text = text || v.id;
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         let showLabel = this.findVertexPropertySetting(v, viewSettings, "showLabel");
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         showLabel = showLabel === undefined ? true : showLabel; // Default to true if not specified
         if (showLabel && v.label) {
             text += ` (${v.label})`;

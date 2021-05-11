@@ -7,10 +7,10 @@
  * These types are shared between server and client code
  */
 
-// tslint:disable:no-reserved-keywords (This code is deprecated anyway)
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface GraphResults {
-  // tslint:disable-next-line:no-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fullResults: any[];
   countUniqueVertices: number;
   countUniqueEdges: number;

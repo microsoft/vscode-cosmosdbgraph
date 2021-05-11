@@ -3,7 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// tslint:disable-next-line: export-name
 export function removeDuplicatesById<T extends { id: string }>(entries: T[]): T[] {
     const mapById = new Map<string, T>();
     entries.forEach(n => {

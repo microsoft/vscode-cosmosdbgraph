@@ -3,9 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// grandfathered in
-// tslint:disable: insecure-random
-
 const nodesCount = 250;
 const aveConnectionsPerNode = 100;
 
@@ -71,7 +68,6 @@ class Person {
 class Vertex {
     public id: string;
     public label: string;
-    // tslint:disable-next-line: no-reserved-keywords
     public type: "vertex";
     public properties: { [key: string]: [{ id: string, value: string }] };
 }
@@ -91,7 +87,6 @@ class Vertex {
 class Edge {
     public id: string;
     public label: string;
-    // tslint:disable-next-line: no-reserved-keywords
     public type: "edge";
     public inVLabel: string;
     public outVLabel: string;
@@ -115,7 +110,6 @@ function createPerson(): Person {
     return p;
 }
 
-// tslint:disable-next-line: export-name
 export function createGraph(): [Vertex[], Edge[]] {
     const people: Person[] = [];
     const edges: Edge[] = [];

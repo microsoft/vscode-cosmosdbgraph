@@ -5,7 +5,6 @@
 
 import { ext } from './extensionVariables';
 
-// tslint:disable-next-line: export-name
 export function getResourcesPath(): string {
     return ext.context.asAbsolutePath('resources');
 }

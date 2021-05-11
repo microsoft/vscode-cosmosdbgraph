@@ -22,5 +22,6 @@ test/**
 testOutput/**
 testWorkspace/**
 tsconfig.json
-tslint.json
 webpack.config*
+.eslintignore
+.eslintrc.js

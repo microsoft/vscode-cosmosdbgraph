@@ -12,9 +12,6 @@ import { ext } from '../extensionVariables';
 import { IGraphConfiguration } from '../vscode-cosmosdbgraph.api';
 import { GraphViewServer } from './GraphViewServer';
 
-// grandfathered in
-// tslint:disable:typedef
-
 interface IServerProvider {
     findServerById(id: number): GraphViewServer;
 }
@@ -32,7 +29,7 @@ export class GraphViewsManager implements IServerProvider { //Graphviews Panel
         try {
             id = await this.getOrCreateServer(config);
         } catch (err) {
-            vscode.window.showErrorMessage(parseError(err).message);
+            void vscode.window.showErrorMessage(parseError(err).message);
         }
         const existingPanel: vscode.WebviewPanel = this._panels.get(id);
         if (existingPanel) {
